@@ -1,6 +1,6 @@
 # Sources
 
-Every dataset, service, tool and reference the Marswalk Planner uses, for the Space Apps submission. Add a row whenever something new goes into the project.
+Every dataset, service, tool and reference the Martian Pathfinder uses, for the Space Apps submission. Add a row whenever something new goes into the project.
 
 ## NASA data used in the site
 

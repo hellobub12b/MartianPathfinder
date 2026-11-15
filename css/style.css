@@ -325,3 +325,9 @@ details > * + * { margin-top: 8px; }
 .layer.base { padding: 4px 0 4px 10px; border-left: 2px solid var(--line); }
 .layer.base .bname { font-weight: 500; }
 .layer.base .src, .layer.base .note { padding-left: 0; }
+
+/* 3D bar: fixed-width read-outs, so sliders stay still while they are dragged */
+.bar3d output { display: inline-block; }
+#v3-sun-out { width: 17ch; }
+#v3-exag-out { width: 3ch; }
+.bar3d label { white-space: nowrap; }

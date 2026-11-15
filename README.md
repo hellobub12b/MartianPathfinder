@@ -1,6 +1,6 @@
-# Marswalk Planner
+# Martian Pathfinder
 
-**Live site:** add your GitHub Pages link here.
+**Live site:** https://hellobub12b.github.io/MartianPathfinder/
 
 > In this repository the website sits at the top level (`index.html`, `css/`, `js/`, `data/`) so GitHub Pages can serve it. Where the notes below say `site/`, read it as the top level.
 

@@ -158,7 +158,8 @@ const View3D = (() => {
     const p = MarsTime.sunPosition(opts.sunDeclination, opts.habitat.lat, ltst);
     const el = Math.max(p.elevation, 2) * Math.PI / 180, az = p.azimuth * Math.PI / 180;
     sun.position.set(Math.cos(el) * Math.sin(az), Math.sin(el), -Math.cos(el) * Math.cos(az)).multiplyScalar(area.widthM);
-    sun.intensity = p.elevation > 0 ? 0.35 + 0.75 * Math.sin(el) : 0.08;
+    // Brightness rises smoothly from the horizon: no sudden jump at sunrise or sunset.
+    sun.intensity = 0.08 + 1.02 * Math.max(0, Math.sin(p.elevation * Math.PI / 180));
     return p;
   }
 

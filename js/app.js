@@ -1,4 +1,4 @@
-// Marswalk Planner: map, route and go/no-go dashboard.
+// Martian Pathfinder: map, route and go/no-go dashboard.
 // Settings live in config.js. Mars clock maths live in marstime.js.
 // Slope and route finding live in terrain.js.
 
@@ -1077,6 +1077,7 @@ function renderWind(plan) {
 // ---------- 3D view ----------
 
 let lastPlan = null;
+const sunLabel = (ltst, p) => `${MarsTime.hhmm(ltst)} · ${p.elevation > 0 ? p.elevation.toFixed(0) + "° up" : "sun down"}`;
 function open3D() {
   if (!Terrain.isReady()) return;
   // Show the part of the map on screen, trimmed to what the terrain model covers.
@@ -1086,7 +1087,7 @@ function open3D() {
   const now = MarsTime.at(new Date(), HABITAT.lat, HABITAT.lon);
   $("view3d").hidden = false;
   $("v3-sun").value = state.startLTST;
-  $("v3-sun-out").textContent = MarsTime.hhmm(state.startLTST);
+  $("v3-sun-out").textContent = sunLabel(state.startLTST, MarsTime.sunPosition(now.decl, HABITAT.lat, state.startLTST));
   $("v3-fly").setAttribute("aria-pressed", "false"); $("v3-fly").textContent = "Walk the route";
   View3D.show({
     host: $("view3d-canvas"), bounds,
@@ -1121,7 +1122,7 @@ function bind3D() {
   $("v3-exag").addEventListener("input", e => { $("v3-exag-out").textContent = e.target.value; View3D.setExaggeration(+e.target.value); });
   $("v3-sun").addEventListener("input", e => {
     const p = View3D.setSunTime(+e.target.value);
-    $("v3-sun-out").textContent = `${MarsTime.hhmm(+e.target.value)} · ${p.elevation > 0 ? p.elevation.toFixed(0) + "° up" : "below horizon"}`;
+    $("v3-sun-out").textContent = sunLabel(+e.target.value, p);
   });
   $("v3-slope").addEventListener("change", e => View3D.setSlope(e.target.checked));
 }
