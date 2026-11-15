@@ -1,2 +1,84 @@
-# MartianPathfinder
-Mars mission planner
+# Marswalk Planner
+
+**Live site:** add your GitHub Pages link here.
+
+> In this repository the website sits at the top level (`index.html`, `css/`, `js/`, `data/`) so GitHub Pages can serve it. Where the notes below say `site/`, read it as the top level.
+
+A layered map and EVA planner for Jezero Crater, built for the NASA Space Apps Marswalk challenge.
+
+## Run it
+
+The site is plain HTML, CSS and JavaScript. It needs a local web server and an internet connection (map tiles and the rover track load from NASA).
+
+Windows, nothing installed:
+
+```
+powershell -ExecutionPolicy Bypass -File serve.ps1
+```
+
+With Python: `python -m http.server 8765 --directory site`
+
+Then open http://localhost:8765. To publish, push `site/` to GitHub and turn on GitHub Pages.
+
+## Files
+
+| File | What it does |
+| --- | --- |
+| `site/js/config.js` | Map layers, science stops, assumptions, sample weather. Most edits happen here. |
+| `site/js/marstime.js` | Mars clock, season, sunrise and sunset (Mars24 equations). |
+| `site/js/terrain.js` | Loads the terrain model, computes slope, finds the route. |
+| `site/js/app.js` | Map, layer panel, plan, go/no-go checks. |
+| `site/css/style.css` | Look and layout. |
+| `serve.ps1` | Small local web server for Windows. |
+
+## What is real and what is a placeholder
+
+Real:
+- Map tiles from NASA Mars Trek: MRO HiRISE and CTX over Jezero, MGS MOLA, Mars Odyssey THEMIS, Viking.
+- Perseverance's track, loaded live from the Mars 2020 mission map.
+- Stop positions: Perseverance's own end-of-drive locations.
+- Mars time, season and sunset: computed with the Mars24 equations.
+- **Terrain and slope.** `site/data/jezero_ctx_dtm_20m.tif` is the MRO CTX stereo terrain model (20 m per cell) from USGS Astrogeology: https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ . The browser reads it with geotiff.js and computes slope.
+- **Route.** `terrain.js` runs an A* search on that grid for the fastest walking route. Step time comes from NASA's Apollo-based suited walking speed model (`SUIT` in `config.js`): 0.75 m/s on level ground, 0.01 m/s slower per degree of slope. Ground steeper than `ROUTING.maxSlopeDeg` is off-limits and gentle ground is preferred.
+- **Weather.** `site/data/weather_meda.json` summarises 30 sols of Perseverance MEDA readings (sols 1356–1385, December 2024 to January 2025) from NASA's Planetary Data System. Those sols were chosen because Mars was then in the same season as in mid-November 2026; NASA's archive does not reach today. For a demo on a much later date, pick sols about 669 sols (one Mars year) before the demo's sol. `data-prep/get-weather.ps1` rebuilds it; pass `-LastSol` and `-Sols` to change the range. It takes about 10 minutes for 30 sols.
+
+- **Dust.** `site/data/dust_climatology.json` holds daily dust optical depth over Jezero for Mars Years 24–36, from the Montabone et al. climatology (MGS TES, Mars Odyssey THEMIS, MRO MCS). `data-prep/get-dust.ps1` rebuilds it (downloads about 700 MB, one file at a time). The site matches it to today's season.
+
+- **3D view.** `site/js/view3d.js` (three.js). The "3D view" button on the map turns whatever area is on screen into a 3D surface with the route, stops, a sun-time slider, slope colours and a "Walk the route" fly-through. Zoom the map in first for more detail: the surface has at most 420 points per side.
+- **Fine terrain.** `site/data/hirise_5m.bin` and `hirise_5m.json` hold a 5 m elevation grid of the main walking area, cut from the 1.8 GB HiRISE terrain model by `data-prep/get-hirise.ps1` (about 600 small requests, 10 minutes). `terrain.js` uses it to sharpen slopes and measure roughness. Without the file the site still works on the 20 m model.
+- **Energy-budget rule.** `ROUTING` in `config.js`: nothing steeper than `maxSlopeDeg` (15°), with penalties for steep, rough and sandy ground.
+- **Atmosphere, radiation, consumables.** `ATMOSPHERE`, `RADIATION` and `SUIT_SUPPLY` in `config.js` hold the numbers and say where each comes from.
+- **Thermal inertia.** `site/data/themis_ti.bin` and `themis_ti.json` hold the Jezero window (321 × 303 pixels) of USGS's THEMIS thermal inertia mosaic. `data-prep/get-thermal-inertia.ps1` rebuilds them by requesting only the needed tiles of the 2.5 GB source file.
+- **Sand avoidance.** `terrain.js` paints the mapped sand polygons onto the terrain grid and counts sand cells as `ROUTING.sandPenalty` times slower when choosing a path. Set it to 1 to ignore sand.
+- **Wind.** `site/data/wind_meda.json` holds average wind speed and direction for each local hour, from MEDA sols 36–65, built by `data-prep/get-wind.ps1`. `site/js/wind.js` draws the animated streaks. The animation is a simulation: one measured value for the whole map.
+- **Preset missions.** `MISSIONS` in `config.js` lists each mission's stops and mineral map. Add or change missions there.
+- **Sample sites and place names.** `site/js/places.js` is generated by `data-prep/get-places.ps1` from NASA's sample list (typed into the script), the rover's waypoint file, and IAU Gazetteer coordinates. Rerun it when NASA adds samples.
+- **Mineral maps.** `site/data/crism/` holds nine CRISM browse images (three observations, three products) and `index.json` with each observation's corner coordinates, taken from the NASA label files.
+
+## Adding the sand layer
+
+The "Sand and ripples" and "Rock units" layers both read `site/data/geology.geojson` (6.5 MB, included). It comes from the USGS geologic map of Jezero and Nili Planum (SIM 3464, Sun & Stack 2020), which USGS publishes only as an ArcGIS geodatabase. To rebuild the file:
+
+1. Download `sim3464_database.zip` (333 MB) from https://pubs.usgs.gov/sim/3464/ and unzip it.
+2. Zip the folder `Geodatabase/Nili.gdb` as `data-prep/work/Nili.gdb.zip`. The zip must contain the `Nili.gdb` folder itself.
+3. Run `powershell -ExecutionPolicy Bypass -File data-prep\prep-server.ps1` and open http://localhost:8770.
+
+The page converts the `GeoUnits_v1` layer with GDAL running in the browser (gdal3.js), so nothing is installed. It keeps only the area of the site's terrain model, three fields (`unit`, `name`, `symbol`), and detail down to about 5 m.
+
+The sand layer draws every polygon whose attributes contain "eolian" (the map's "Eolian bedform unit", 144 areas). Change `SAND.match` in `config.js` to pick other units. The rock unit colours are ours, not the official USGS map colours.
+
+Every source and link is listed in `SOURCES.md`. Add to it whenever a new dataset or tool goes in.
+
+Not real:
+- **Dust opacity.** NASA's MEDA archive has no dust opacity table, so it is a slider labelled "simulated".
+- **Small hazards.** A 20 m grid cannot see boulders or sand ripples. The 1 m HiRISE terrain model exists (same USGS folder, 1.8 GB) but is too large to load in a browser without cutting it down first.
+- **Limits.** EVA length, walk-back time, minutes per stop and the dust and temperature thresholds in `ASSUME` are the team's assumptions, not NASA figures.
+- **Mars gravity.** The walking speed model comes from Apollo, so it is Moon data. NASA's walkback test found the MKIII suit "extremely limited" at Mars gravity. Two things in the model still need checking against the original paper: whether slope is in degrees or percent, and whether downhill is faster. See `SOURCES.md`.
+- **Stop descriptions.** Written as a starting point. The science lead should fact-check them.
+
+## Notes
+
+- Coordinates are planetocentric latitude and east-positive longitude (IAU Mars 2000 sphere, radius 3,396.19 km).
+- Mars Trek tiles are equirectangular, so the map uses Leaflet's `EPSG4326` grid.
+- The deepest zoom that really has tiles is 3 less than the level count in each layer's `WMTSCapabilities.xml`. The `maxNativeZoom` values in `config.js` were tested by hand.
+- More Jezero layers exist on Mars Trek (search "Jezero" at https://trek.nasa.gov/mars/), including HiRISE and CTX elevation models.

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marswalk Planner · Jezero Crater</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">
+      <h1>Marswalk Planner</h1>
+      <span class="site">Jezero Crater · 18.4°N 77.5°E</span>
+    </div>
+    <div class="clock" aria-live="off">
+      <div><span class="k">Sol</span><span class="v" id="clk-sol">–</span></div>
+      <div><span class="k">Local solar time</span><span class="v" id="clk-ltst">–</span></div>
+      <div><span class="k">Sun</span><span class="v" id="clk-sun">–</span></div>
+      <div><span class="k">Season</span><span class="v" id="clk-season">–</span></div>
+    </div>
+    <!-- The verdict and its one-line reason. Clicking it opens the EVA status tab. -->
+    <button type="button" class="verdict-box" id="verdict-box" data-state="go" aria-label="Open EVA status">
+      <span class="verdict" id="verdict">GO</span>
+      <span class="verdict-reason" id="verdict-reason"></span>
+    </button>
+  </header>
+
+  <main class="layout">
+    <aside class="panel" aria-label="Planner">
+      <nav class="tabs" role="tablist" aria-label="Planner sections">
+        <button type="button" role="tab" data-tab="plan" aria-selected="true">Plan</button>
+        <button type="button" role="tab" data-tab="eva" aria-selected="false">EVA status<span class="tabdot" id="tabdot" data-state="go"></span></button>
+        <button type="button" role="tab" data-tab="layers" aria-selected="false">Layers</button>
+        <button type="button" role="tab" data-tab="conditions" aria-selected="false">Conditions</button>
+        <button type="button" role="tab" data-tab="about" aria-selected="false">About</button>
+      </nav>
+
+      <!-- PLAN: choose where to go and when -->
+      <div class="tabpanel" id="tab-plan" role="tabpanel">
+        <section>
+          <h2>1 · Pick a mission</h2>
+          <p class="hint">Ready-made walks. Pick one to load its route and its mineral map, or build your own below.</p>
+          <div id="mission-list" class="stack"></div>
+        </section>
+        <section>
+          <h2>2 · Your route</h2>
+          <p class="hint">The walk visits these in order, starting and ending at the habitat.</p>
+          <ol id="route-order" class="route-order"></ol>
+          <button type="button" id="add-wp" class="btn" aria-pressed="false">Add waypoints on the map</button>
+          <p class="hint" id="add-wp-hint" hidden>Click the map to drop a waypoint. Drag a waypoint to move it.</p>
+          <details>
+            <summary>Add science stops</summary>
+            <p class="hint">Every place Perseverance collected a sample, from NASA's sample list. Tick one to add it to the end of the route.</p>
+            <div id="stop-list"></div>
+          </details>
+        </section>
+        <section>
+          <h2>3 · Timing</h2>
+          <div class="seg" role="group" aria-label="Detail level">
+            <button type="button" id="mode-simple" aria-pressed="true">Simple</button>
+            <button type="button" id="mode-enhanced" aria-pressed="false">Enhanced</button>
+          </div>
+          <label class="slider">EVA start, local time <output id="start-out"></output>
+            <input type="range" id="start" min="6" max="14" step="0.25">
+          </label>
+          <div id="simple-only">
+            <label class="slider">Minutes at each science stop <output id="stopmin-out"></output>
+              <input type="range" id="stopmin" min="10" max="90" step="5">
+            </label>
+          </div>
+          <div id="enhanced-only" class="stack" hidden>
+            <label class="slider">Walking pace, level ground <output id="pace-out"></output>
+              <input type="range" id="pace" min="1.5" max="6.5" step="0.1">
+            </label>
+            <p class="hint">NASA plans 1.5–3 km/h within a site and 4–5 km/h between sites. Astronauts averaged 6.3 km/h in the 10 km walkback test (lunar gravity, level treadmill). Speed drops 0.036 km/h per degree of slope.</p>
+            <h3>Minutes at each stop</h3>
+            <div id="stop-times" class="stack"></div>
+            <h3>Safety limits (hours)</h3>
+            <div class="limits">
+              <span></span><span class="k">Ideal</span><span class="k">Limit</span>
+              <span>EVA length</span>
+              <input type="number" id="lim-evaIdealH" min="1" max="12" step="0.5" aria-label="Ideal EVA length in hours">
+              <input type="number" id="lim-evaLimitH" min="1" max="12" step="0.5" aria-label="Maximum EVA length in hours">
+              <span>Walk-back</span>
+              <input type="number" id="lim-walkBackIdealH" min="0.25" max="6" step="0.25" aria-label="Ideal walk-back time in hours">
+              <input type="number" id="lim-walkBackLimitH" min="0.25" max="6" step="0.25" aria-label="Maximum walk-back time in hours">
+              <span>Before sunset</span>
+              <input type="number" id="lim-sunsetMarginIdealH" min="0.25" max="6" step="0.25" aria-label="Ideal time spare before sunset in hours">
+              <input type="number" id="lim-sunsetMarginMinH" min="0.25" max="6" step="0.25" aria-label="Minimum time spare before sunset in hours">
+            </div>
+          </div>
+          <p class="hint" id="mode-note"></p>
+        </section>
+      </div>
+
+      <!-- EVA STATUS: is this walk safe, and why -->
+      <div class="tabpanel" id="tab-eva" role="tabpanel" hidden>
+        <section>
+          <div class="why" id="why" data-state="go"></div>
+          <div class="totals">
+            <div><span class="k">Distance</span><span class="v" id="tot-dist">–</span></div>
+            <div><span class="k">Duration</span><span class="v" id="tot-time">–</span></div>
+            <div><span class="k">Back at</span><span class="v" id="tot-back">–</span></div>
+          </div>
+        </section>
+        <section>
+          <h2>Safety checks</h2>
+          <ul id="checks" class="checks"></ul>
+        </section>
+        <section>
+          <h2>Suit consumables</h2>
+          <ul id="supply-list" class="supplies"></ul>
+          <p class="hint" id="supply-note"></p>
+          <details>
+            <summary>Where these numbers come from</summary>
+            <p class="hint">Use rates: NASA's EVA Walkback Test (walking) and the Apollo surface average (working). Tank sizes: Apollo 15–17 backpack. The oxygen tank size is not yet verified.</p>
+          </details>
+        </section>
+        <section>
+          <h2>The walk, leg by leg</h2>
+          <svg id="profile" viewBox="0 0 320 110" role="img" aria-label="Elevation along the route"></svg>
+          <ol id="leg-list" class="legs"></ol>
+          <p class="hint" id="route-note">Loading terrain model…</p>
+        </section>
+        <section>
+          <h2>Radiation <span class="badge">RAD · Gale</span></h2>
+          <div class="totals">
+            <div><span class="k">This EVA</span><span class="v" id="rad-eva">–</span></div>
+            <div><span class="k">Per day</span><span class="v" id="rad-day">–</span></div>
+            <div><span class="k">Per Earth year</span><span class="v" id="rad-year">–</span></div>
+          </div>
+          <details>
+            <summary>About this number</summary>
+            <p class="hint">Dose equivalent from galactic cosmic rays, measured on the surface by Curiosity's RAD instrument in Gale Crater and used here as a stand-in for Jezero. It is the same everywhere on this map to within a few percent, so there is no radiation map layer. A solar storm would add to it. A suit gives almost no shielding.</p>
+          </details>
+        </section>
+      </div>
+
+      <!-- LAYERS: what the map shows -->
+      <div class="tabpanel" id="tab-layers" role="tabpanel" hidden>
+        <section>
+          <p class="hint">Tick a layer to show it on the map. Sliders set how see-through it is.</p>
+          <div id="layer-list"></div>
+        </section>
+      </div>
+
+      <!-- CONDITIONS: weather and environment -->
+      <div class="tabpanel" id="tab-conditions" role="tabpanel" hidden>
+        <section>
+          <h2>Weather <span class="badge" id="wx-badge">loading</span></h2>
+          <div class="wx" id="wx"></div>
+          <svg id="tempchart" class="chart" viewBox="0 0 320 100" role="img" aria-label="Air temperature through the day"></svg>
+          <p class="hint" id="tempchart-note"></p>
+          <p class="hint" id="wx-note"></p>
+        </section>
+        <section>
+          <h2>Dust <span class="badge">TES · THEMIS · MCS</span></h2>
+          <label class="field">Dust scenario
+            <select id="dust-scenario">
+              <option value="typical">Typical for this season</option>
+              <option value="worst">Worst on record for this season</option>
+              <option value="storm">2018 global dust storm peak</option>
+              <option value="custom">Custom value</option>
+            </select>
+          </label>
+          <label class="slider" id="tau-wrap" hidden>Custom optical depth <output id="tau-out"></output>
+            <input type="range" id="tau" min="0.1" max="6" step="0.1">
+          </label>
+          <svg id="dustchart" class="chart" viewBox="0 0 320 110" role="img" aria-label="Dust optical depth over Jezero through the Mars year"></svg>
+          <p class="hint" id="dust-note"></p>
+          <details>
+            <summary>About this record</summary>
+            <p class="hint">Orbital measurements by NASA's TES, THEMIS and Mars Climate Sounder instruments, compiled by Montabone et al. It is past seasons, not a live reading. The caution and scrub thresholds are team assumptions.</p>
+          </details>
+        </section>
+        <section>
+          <h2>Wind <span class="badge" id="wind-badge">MEDA</span></h2>
+          <div class="windrow">
+            <svg id="compass" viewBox="-50 -50 100 100" role="img" aria-label="Wind direction"></svg>
+            <div class="stack">
+              <div><span class="k">Speed</span><span class="v" id="wind-speed">–</span></div>
+              <div><span class="k">Blowing from</span><span class="v" id="wind-dir">–</span></div>
+              <div><span class="k">Strongest 5% above</span><span class="v" id="wind-gust">–</span></div>
+            </div>
+          </div>
+          <label class="slider">Hour shown, local time <output id="windhour-out"></output>
+            <input type="range" id="windhour" min="0" max="23" step="1">
+          </label>
+          <p class="hint" id="wind-eva"></p>
+          <details>
+            <summary>About this record</summary>
+            <p class="hint" id="wind-note"></p>
+          </details>
+        </section>
+        <section>
+          <h2>Atmosphere <span class="badge">NASA fact sheet</span></h2>
+          <div class="totals two">
+            <div><span class="k">Pressure at habitat</span><span class="v" id="atm-pressure">–</span></div>
+            <div><span class="k">Of Earth sea level</span><span class="v" id="atm-earth">–</span></div>
+          </div>
+          <ul id="gas-list" class="gases"></ul>
+          <p class="hint" id="atm-note"></p>
+        </section>
+      </div>
+
+      <!-- ABOUT: sources -->
+      <div class="tabpanel" id="tab-about" role="tabpanel" hidden>
+        <section class="credits">
+          <h2>What this is</h2>
+          <p>A planner for a walk on Mars. It stacks data from NASA missions over Jezero Crater, finds a safe walking route between science stops, and checks the plan against daylight, terrain, weather and what the suit can carry.</p>
+        </section>
+        <section class="credits">
+          <h2>Data</h2>
+          <p>Map tiles: NASA Mars Trek (MRO HiRISE and CTX, MGS MOLA, Mars Odyssey THEMIS, Viking). Terrain model: MRO CTX stereo DTM, USGS Astrogeology. Rover track and weather: NASA/JPL-Caltech Mars 2020 (MEDA). Dust record: Montabone et al. climatology from MGS TES, Mars Odyssey THEMIS and MRO MCS. Surface dust cover: MGS TES. Walking speeds: NASA JSC traverse model and EVA Walkback Test. Atmosphere: NASA Mars Fact Sheet. Radiation: MSL Curiosity RAD (Hassler et al.). Consumable rates: NASA EVA Walkback Test. Thermal inertia: Mars Odyssey THEMIS (USGS). Fine terrain: MRO HiRISE DTM (USGS). Wind: Mars 2020 MEDA wind sensor, sols 36 to 65 (NASA PDS Atmospheres Node). Mineral maps: MRO CRISM (NASA PDS Geosciences Node). Sample sites: NASA Mars Rock Samples list. Place names: IAU Gazetteer of Planetary Nomenclature (USGS). Rock units and sand: USGS SIM 3464. Mars time: Allison &amp; McEwen (2000), as used in NASA GISS Mars24.</p>
+        </section>
+        <section class="credits">
+          <h2>What is assumed</h2>
+          <p>The safety limits, the dust and temperature thresholds, the habitat's location and the reserve levels for consumables are the team's assumptions, not NASA figures. Walking speeds and consumable rates are from Moon-gravity tests. The wind animation spreads one measured value over the whole map.</p>
+        </section>
+      </div>
+    </aside>
+
+    <div id="map" role="application" aria-label="Map of Jezero Crater">
+      <div id="view3d" hidden>
+        <div id="view3d-canvas"></div>
+        <div class="bar3d">
+          <button type="button" class="btn small" id="v3-back">← Back to map</button>
+          <button type="button" class="btn small" id="v3-fly" aria-pressed="false">Walk the route</button>
+          <button type="button" class="btn small" id="v3-home">Reset view</button>
+          <label>Height ×<output id="v3-exag-out">2</output>
+            <input type="range" id="v3-exag" min="1" max="5" step="0.5" value="2" aria-label="Vertical exaggeration"></label>
+          <label>Sun at <output id="v3-sun-out"></output>
+            <input type="range" id="v3-sun" min="5" max="19" step="0.25" aria-label="Time of day for the sunlight"></label>
+          <label class="check"><input type="checkbox" id="v3-slope"> Slope colours</label>
+        </div>
+        <p class="note3d" id="v3-note"></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/geotiff@2.1.3/dist-browser/geotiff.js"></script>
+  <script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="js/places.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/marstime.js"></script>
+  <script src="js/terrain.js"></script>
+  <script src="js/wind.js"></script>
+  <script src="js/view3d.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
