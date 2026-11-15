@@ -1,0 +1,25 @@
+{
+    "source":  "USGS THEMIS Thermal Inertia Mosaic Quantitative 00N060E 100mpp (Mars Odyssey THEMIS; Fergason et al. 2006 method)",
+    "url":  "https://astrogeology.usgs.gov/search/map/themis_thermal_inertia_mosaic_quantitative_00n060e_100mpp",
+    "units":  "J m^-2 K^-1 s^-1/2",
+    "accuracy":  "about 20% (USGS)",
+    "width":  321,
+    "height":  303,
+    "format":  "16-bit little-endian whole numbers, rows north to south, 0 = no data",
+    "bounds":  [
+                   [
+                       18.209134264663231,
+                       77.159092201189054
+                   ],
+                   [
+                       18.720313591864123,
+                       77.700638617134558
+                   ]
+               ],
+    "validPixels":  97263,
+    "p02":  182,
+    "median":  341,
+    "p98":  569,
+    "min":  114,
+    "max":  831
+}

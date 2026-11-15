@@ -1,0 +1,178 @@
+{
+    "source":  "NASA PDS Atmospheres Node, Mars 2020 MEDA bundle, derived wind (DER_WS)",
+    "url":  "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/",
+    "note":  "directionFrom: degrees clockwise from north that the wind blows FROM (assumed meteorological convention: check the MEDA data guide).",
+    "firstSol":  36,
+    "lastSol":  65,
+    "solsUsed":  30,
+    "hours":  [
+                  {
+                      "hour":  0,
+                      "readings":  27755,
+                      "meanSpeed":  3.67,
+                      "p95Speed":  6.53,
+                      "directionFrom":  270
+                  },
+                  {
+                      "hour":  1,
+                      "readings":  35927,
+                      "meanSpeed":  1.84,
+                      "p95Speed":  3.54,
+                      "directionFrom":  242
+                  },
+                  {
+                      "hour":  2,
+                      "readings":  30223,
+                      "meanSpeed":  1.87,
+                      "p95Speed":  3.94,
+                      "directionFrom":  177
+                  },
+                  {
+                      "hour":  3,
+                      "readings":  19652,
+                      "meanSpeed":  1.72,
+                      "p95Speed":  3.58,
+                      "directionFrom":  106
+                  },
+                  {
+                      "hour":  4,
+                      "readings":  29244,
+                      "meanSpeed":  1.15,
+                      "p95Speed":  2.08,
+                      "directionFrom":  160
+                  },
+                  {
+                      "hour":  5,
+                      "readings":  39977,
+                      "meanSpeed":  1.1,
+                      "p95Speed":  2.24,
+                      "directionFrom":  13
+                  },
+                  {
+                      "hour":  6,
+                      "readings":  21900,
+                      "meanSpeed":  1.16,
+                      "p95Speed":  2.48,
+                      "directionFrom":  95
+                  },
+                  {
+                      "hour":  7,
+                      "readings":  23126,
+                      "meanSpeed":  1.75,
+                      "p95Speed":  2.8,
+                      "directionFrom":  153
+                  },
+                  {
+                      "hour":  8,
+                      "readings":  31577,
+                      "meanSpeed":  2.78,
+                      "p95Speed":  4.34,
+                      "directionFrom":  162
+                  },
+                  {
+                      "hour":  9,
+                      "readings":  32396,
+                      "meanSpeed":  2.42,
+                      "p95Speed":  4.27,
+                      "directionFrom":  143
+                  },
+                  {
+                      "hour":  10,
+                      "readings":  22737,
+                      "meanSpeed":  3.01,
+                      "p95Speed":  5.77,
+                      "directionFrom":  86
+                  },
+                  {
+                      "hour":  11,
+                      "readings":  105896,
+                      "meanSpeed":  4,
+                      "p95Speed":  7.38,
+                      "directionFrom":  93
+                  },
+                  {
+                      "hour":  12,
+                      "readings":  192569,
+                      "meanSpeed":  4.26,
+                      "p95Speed":  7.79,
+                      "directionFrom":  106
+                  },
+                  {
+                      "hour":  13,
+                      "readings":  175370,
+                      "meanSpeed":  4.54,
+                      "p95Speed":  8.24,
+                      "directionFrom":  100
+                  },
+                  {
+                      "hour":  14,
+                      "readings":  161481,
+                      "meanSpeed":  4.91,
+                      "p95Speed":  9.24,
+                      "directionFrom":  99
+                  },
+                  {
+                      "hour":  15,
+                      "readings":  118578,
+                      "meanSpeed":  5.73,
+                      "p95Speed":  9.99,
+                      "directionFrom":  90
+                  },
+                  {
+                      "hour":  16,
+                      "readings":  145565,
+                      "meanSpeed":  7.31,
+                      "p95Speed":  10.48,
+                      "directionFrom":  86
+                  },
+                  {
+                      "hour":  17,
+                      "readings":  32902,
+                      "meanSpeed":  7.68,
+                      "p95Speed":  10.72,
+                      "directionFrom":  81
+                  },
+                  {
+                      "hour":  18,
+                      "readings":  18176,
+                      "meanSpeed":  3.1,
+                      "p95Speed":  5.4,
+                      "directionFrom":  108
+                  },
+                  {
+                      "hour":  19,
+                      "readings":  28800,
+                      "meanSpeed":  2.35,
+                      "p95Speed":  4.32,
+                      "directionFrom":  27
+                  },
+                  {
+                      "hour":  20,
+                      "readings":  36704,
+                      "meanSpeed":  2.99,
+                      "p95Speed":  4.84,
+                      "directionFrom":  326
+                  },
+                  {
+                      "hour":  21,
+                      "readings":  27706,
+                      "meanSpeed":  3.73,
+                      "p95Speed":  6.55,
+                      "directionFrom":  302
+                  },
+                  {
+                      "hour":  22,
+                      "readings":  39364,
+                      "meanSpeed":  4.43,
+                      "p95Speed":  6.65,
+                      "directionFrom":  304
+                  },
+                  {
+                      "hour":  23,
+                      "readings":  30191,
+                      "meanSpeed":  4.84,
+                      "p95Speed":  7.41,
+                      "directionFrom":  285
+                  }
+              ]
+}

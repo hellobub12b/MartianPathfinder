@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Export USGS geology to GeoJSON</title>
+<style>body { font: 14px/1.5 system-ui, sans-serif; max-width: 760px; margin: 32px auto; padding: 0 16px; } pre { background: #f2f3f5; padding: 12px; white-space: pre-wrap; }</style>
+</head>
+<body>
+<h1>Export USGS geology to GeoJSON</h1>
+<p>Converts the geologic units of USGS map SIM 3464 (an ArcGIS geodatabase) into
+<code>site/data/geology.geojson</code>, in latitude and longitude. It uses GDAL compiled for the browser
+(<a href="https://github.com/bugra9/gdal3.js">gdal3.js</a>), so nothing has to be installed.</p>
+<ol>
+  <li>Put <code>Nili.gdb</code> from <code>sim3464_database.zip</code> into a zip named <code>data-prep/work/Nili.gdb.zip</code> (the zip must contain the <code>Nili.gdb</code> folder).</li>
+  <li>Run <code>prep-server.ps1</code> and open this page from it.</li>
+</ol>
+<pre id="log">Starting…</pre>
+<script src="https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/gdal3.js"></script>
+<script>
+const log = m => { document.getElementById("log").textContent += "\n" + m; };
+const MARS_LONLAT = "+proj=longlat +R=3396190 +no_defs";   // IAU Mars 2000 sphere
+
+async function run() {
+  const Gdal = await initGdalJs({ path: "https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package", useWorker: false });
+  log("GDAL ready.");
+  const blob = await (await fetch("work/Nili.gdb.zip")).blob();
+  const file = new File([blob], "Nili.gdb.zip");
+  const opened = await Gdal.open(file, [], ["vsizip"]);
+  const ds = opened.datasets[0];
+  if (!ds) throw new Error("GDAL could not open the geodatabase: " + JSON.stringify(opened.errors));
+  const info = await Gdal.ogrinfo(ds);
+  window.layers = info.layers.map(l => ({ name: l.name, features: l.featureCount, type: l.geometryFields?.[0]?.type, fields: l.fields.map(f => f.name) }));
+  log("Layers: " + window.layers.map(l => `${l.name} (${l.features})`).join(", "));
+
+  const layer = new URLSearchParams(location.search).get("layer") || "GeoUnits_v1";
+  // The full map covers all of Nili Planum (32 MB as GeoJSON). Keep only the area of the
+  // site's terrain model, keep three fields, and drop detail finer than about 5 m.
+  const out = await Gdal.ogr2ogr(ds, [
+    "-f", "GeoJSON", "-t_srs", MARS_LONLAT,
+    "-clipdst", "77.16", "18.21", "77.70", "18.72",
+    "-simplify", "0.00008",
+    "-select", "unit,name,symbol",
+    "-lco", "COORDINATE_PRECISION=5", "-lco", "RFC7946=NO", layer]);
+  const bytes = await Gdal.getFileBytes(out);
+  log(`Converted ${layer}: ${(bytes.length / 1e6).toFixed(2)} MB of GeoJSON.`);
+  const save = await fetch("out/geology.geojson", { method: "PUT", body: bytes });
+  log(save.ok ? "Saved to site/data/geology.geojson." : "Could not save: " + save.status);
+  window.done = save.ok;
+}
+run().catch(e => { log("FAILED: " + e.message); window.failed = e.message; });
+</script>
+</body>
+</html>

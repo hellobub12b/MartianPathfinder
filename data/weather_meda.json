@@ -1,0 +1,303 @@
+{
+    "source":  "NASA PDS Atmospheres Node, Mars 2020 MEDA bundle (calibrated ATS, derived PS)",
+    "url":  "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/",
+    "method":  "Air temperature: coolest of mast sensors ATS 1-3, per-minute means, sol min and max. Pressure: per-second readings.",
+    "sols":  [
+                 {
+                     "sol":  1356,
+                     "date":  "2024-12-12",
+                     "minC":  -78.6,
+                     "maxC":  -26.4,
+                     "pressurePa":  687.6,
+                     "pressureMinPa":  674.2,
+                     "pressureMaxPa":  700.5
+                 },
+                 {
+                     "sol":  1357,
+                     "date":  "2024-12-13",
+                     "minC":  -79.1,
+                     "maxC":  -27.2,
+                     "pressurePa":  687,
+                     "pressureMinPa":  676.8,
+                     "pressureMaxPa":  697
+                 },
+                 {
+                     "sol":  1358,
+                     "date":  "2024-12-14",
+                     "minC":  -78.5,
+                     "maxC":  -28.2,
+                     "pressurePa":  688.9,
+                     "pressureMinPa":  679.2,
+                     "pressureMaxPa":  698
+                 },
+                 {
+                     "sol":  1359,
+                     "date":  "2024-12-15",
+                     "minC":  -75.7,
+                     "maxC":  -26.5,
+                     "pressurePa":  691.7,
+                     "pressureMinPa":  682.8,
+                     "pressureMaxPa":  701.1
+                 },
+                 {
+                     "sol":  1360,
+                     "date":  "2024-12-16",
+                     "minC":  -76.9,
+                     "maxC":  -26.2,
+                     "pressurePa":  692.9,
+                     "pressureMinPa":  683,
+                     "pressureMaxPa":  704.8
+                 },
+                 {
+                     "sol":  1361,
+                     "date":  "2024-12-17",
+                     "minC":  -75.2,
+                     "maxC":  -23.6,
+                     "pressurePa":  693.7,
+                     "pressureMinPa":  684.8,
+                     "pressureMaxPa":  704
+                 },
+                 {
+                     "sol":  1362,
+                     "date":  "2024-12-18",
+                     "minC":  -76.6,
+                     "maxC":  -20,
+                     "pressurePa":  695.7,
+                     "pressureMinPa":  686.5,
+                     "pressureMaxPa":  706.6
+                 },
+                 {
+                     "sol":  1363,
+                     "date":  "2024-12-19",
+                     "minC":  -77.4,
+                     "maxC":  -28.1,
+                     "pressurePa":  694,
+                     "pressureMinPa":  682.6,
+                     "pressureMaxPa":  704.8
+                 },
+                 {
+                     "sol":  1364,
+                     "date":  "2024-12-20",
+                     "minC":  -77,
+                     "maxC":  -26.6,
+                     "pressurePa":  691,
+                     "pressureMinPa":  680.6,
+                     "pressureMaxPa":  700
+                 },
+                 {
+                     "sol":  1365,
+                     "date":  "2024-12-21",
+                     "minC":  -75.9,
+                     "maxC":  -27.1,
+                     "pressurePa":  691.8,
+                     "pressureMinPa":  682.6,
+                     "pressureMaxPa":  700.2
+                 },
+                 {
+                     "sol":  1366,
+                     "date":  "2024-12-22",
+                     "minC":  -76.3,
+                     "maxC":  -26.5,
+                     "pressurePa":  693.2,
+                     "pressureMinPa":  683.7,
+                     "pressureMaxPa":  701.5
+                 },
+                 {
+                     "sol":  1367,
+                     "date":  "2024-12-23",
+                     "minC":  -76.8,
+                     "maxC":  -28,
+                     "pressurePa":  695,
+                     "pressureMinPa":  684.9,
+                     "pressureMaxPa":  705.3
+                 },
+                 {
+                     "sol":  1368,
+                     "date":  "2024-12-24",
+                     "minC":  -76.9,
+                     "maxC":  -28.5,
+                     "pressurePa":  695,
+                     "pressureMinPa":  684,
+                     "pressureMaxPa":  704.7
+                 },
+                 {
+                     "sol":  1369,
+                     "date":  "2024-12-25",
+                     "minC":  -76.9,
+                     "maxC":  -27.5,
+                     "pressurePa":  694.6,
+                     "pressureMinPa":  684.7,
+                     "pressureMaxPa":  703.8
+                 },
+                 {
+                     "sol":  1370,
+                     "date":  "2024-12-26",
+                     "minC":  -76.8,
+                     "maxC":  -26.9,
+                     "pressurePa":  693.9,
+                     "pressureMinPa":  683.6,
+                     "pressureMaxPa":  702.8
+                 },
+                 {
+                     "sol":  1371,
+                     "date":  "2024-12-27",
+                     "minC":  -75.7,
+                     "maxC":  -27.4,
+                     "pressurePa":  693.5,
+                     "pressureMinPa":  683.9,
+                     "pressureMaxPa":  701.8
+                 },
+                 {
+                     "sol":  1372,
+                     "date":  "2024-12-28",
+                     "minC":  -75,
+                     "maxC":  -26.9,
+                     "pressurePa":  693.9,
+                     "pressureMinPa":  683.9,
+                     "pressureMaxPa":  702
+                 },
+                 {
+                     "sol":  1373,
+                     "date":  "2024-12-29",
+                     "minC":  -75.6,
+                     "maxC":  -27.4,
+                     "pressurePa":  693.6,
+                     "pressureMinPa":  684.4,
+                     "pressureMaxPa":  701.3
+                 },
+                 {
+                     "sol":  1374,
+                     "date":  "2024-12-30",
+                     "minC":  -76,
+                     "maxC":  -27.1,
+                     "pressurePa":  696.2,
+                     "pressureMinPa":  687.5,
+                     "pressureMaxPa":  704
+                 },
+                 {
+                     "sol":  1375,
+                     "date":  "2024-12-31",
+                     "minC":  -76,
+                     "maxC":  -26.5,
+                     "pressurePa":  696.2,
+                     "pressureMinPa":  686.5,
+                     "pressureMaxPa":  704.6
+                 },
+                 {
+                     "sol":  1376,
+                     "date":  "2025-01-02",
+                     "minC":  -75.8,
+                     "maxC":  -26,
+                     "pressurePa":  693.2,
+                     "pressureMinPa":  683.5,
+                     "pressureMaxPa":  701.1
+                 },
+                 {
+                     "sol":  1377,
+                     "date":  "2025-01-03",
+                     "minC":  -75.9,
+                     "maxC":  -26.8,
+                     "pressurePa":  693.5,
+                     "pressureMinPa":  685.2,
+                     "pressureMaxPa":  701
+                 },
+                 {
+                     "sol":  1378,
+                     "date":  "2025-01-04",
+                     "minC":  -76,
+                     "maxC":  -28.4,
+                     "pressurePa":  695.6,
+                     "pressureMinPa":  686.9,
+                     "pressureMaxPa":  703.1
+                 },
+                 {
+                     "sol":  1379,
+                     "date":  "2025-01-05",
+                     "minC":  -75.9,
+                     "maxC":  -27.4,
+                     "pressurePa":  697.8,
+                     "pressureMinPa":  688.3,
+                     "pressureMaxPa":  704.7
+                 },
+                 {
+                     "sol":  1380,
+                     "date":  "2025-01-06",
+                     "minC":  -75.5,
+                     "maxC":  -21.6,
+                     "pressurePa":  698.2,
+                     "pressureMinPa":  690.6,
+                     "pressureMaxPa":  704.9
+                 },
+                 {
+                     "sol":  1381,
+                     "date":  "2025-01-07",
+                     "minC":  -74.3,
+                     "maxC":  -27.4,
+                     "pressurePa":  699.2,
+                     "pressureMinPa":  691.4,
+                     "pressureMaxPa":  705.6
+                 },
+                 {
+                     "sol":  1382,
+                     "date":  "2025-01-08",
+                     "minC":  -75.1,
+                     "maxC":  -28.6,
+                     "pressurePa":  698.6,
+                     "pressureMinPa":  690.9,
+                     "pressureMaxPa":  706.4
+                 },
+                 {
+                     "sol":  1383,
+                     "date":  "2025-01-09",
+                     "minC":  -74.1,
+                     "maxC":  -26.5,
+                     "pressurePa":  699.7,
+                     "pressureMinPa":  691.6,
+                     "pressureMaxPa":  707.5
+                 },
+                 {
+                     "sol":  1384,
+                     "date":  "2025-01-10",
+                     "minC":  -73.9,
+                     "maxC":  -28.2,
+                     "pressurePa":  700,
+                     "pressureMinPa":  691,
+                     "pressureMaxPa":  707.6
+                 },
+                 {
+                     "sol":  1385,
+                     "date":  "2025-01-11",
+                     "minC":  -74.4,
+                     "maxC":  -26.9,
+                     "pressurePa":  698.4,
+                     "pressureMinPa":  689.2,
+                     "pressureMaxPa":  706.8
+                 }
+             ],
+    "hourlyMeanC":  [
+                        -68.8,
+                        -69.9,
+                        -70.8,
+                        -72.2,
+                        -73.4,
+                        -74.7,
+                        -75,
+                        -72.3,
+                        -66.4,
+                        -57.9,
+                        -48.8,
+                        -42.2,
+                        -37.1,
+                        -34.3,
+                        -31.2,
+                        -29.9,
+                        -31,
+                        -36.6,
+                        -45.6,
+                        -53.1,
+                        -58.4,
+                        -61.3,
+                        -64.2,
+                        -66.6
+                    ]
+}
